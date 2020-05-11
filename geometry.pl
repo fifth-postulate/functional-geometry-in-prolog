@@ -13,6 +13,8 @@ Eschers Square Limit is produced by stamping a base image. Here we define what i
 */
 stamp(d).
 
+defaultBox(box(vec(75.0, 75.0), vec(640.0, 0), vec(0.0, 640.0))).
+
 /* ## Algebraic Terms
 Below we will describe the terms that we will use to describe complex pictures. They are
 divided in the following classes
@@ -81,8 +83,9 @@ side(N, C) :-
     ttile(W),
     quartet(U, U, turn(W), W, C).
 
-utile(quartet(U, turn(turn(turn(U))), turn(turn(U)), turn(U))) :-
-    stamp(U).
+utile(C) :-
+    stamp(U),
+    quartet(U, turn(turn(turn(U))), turn(turn(U)), turn(U), C).
 
 ttile(over(Stamp, over(U, turn(turn(turn(U)))))) :-
     stamp(Stamp),
@@ -164,9 +167,9 @@ render(flip(T), box(A, B, C), Result) :-
     render(T, box(A_, B_, C), Result).
 
 render(toss(T), box(A, B, C), Result) :-
-    add(A, B_, A_),
     add(B, C, BC),
     scale(0.5, BC, B_),
+    add(A, B_, A_),
     subtract(C, B, CB),
     scale(0.5, CB, C_),
     render(T, box(A_, B_, C_), Result).
@@ -175,6 +178,10 @@ render(over(U, V), Box, Result) :-
     render(U, Box, UResult),
     render(V, Box, VResult),
     append(UResult, VResult, Result).
+
+render(Shape, Box, Result) :-
+    shape(Shape, DrawingPrimitives),
+    fit(DrawingPrimitives, Box, Result).
 
 /* ## Vector Algebra
 These clauses help in doing vector algebra.
@@ -211,7 +218,23 @@ A rendering is a list of drawing instructions
 
 */
 
+fit(DrawingPrimitives, Box, Result) :- fit(DrawingPrimitives, Box, [], Result).
+
+fit([], _, Result, Result).
+fit([polygon(Points)|Rest], Box, Accumulator, Result) :-
+    transform(Points, Box, TransformedPoints),
+    fit(Rest, Box, [polygon(TransformedPoints)|Accumulator], Result).
+
+transform([], _, []).
+transform([P|Rest], Box, [Q|TransformedRest]) :-
+    transform(P, Box, Q),
+    transform(Rest, Box, TransformedRest).
+
+transform(vec(X, Y), box(vec(Ax, Ay), vec(Bx, By), vec(Cx, Cy)), vec(U, V)) :-
+    U is Ax + (Bx + Cx) * X,
+    V is Ay + (By + Cy) * Y.
+
 shape(d,
-    [ polygon(vec(0.3, 0.2), vec(0.3, 0.5), vec(0.4, 0.6), vec(0.6, 0.6), vec(0.6, 0.9), vec(0.7, 0.9), vec(0.7, 0.1), vec(0.4, 0.1))
-    , polugon(vec(0.40, 0.24), vec(0.40, 0.46), vec(0.44, 0.50), vec(0.60, 0.50), vec(0.60, 0.20), vec(0.44, 0.20))]).
+    [ polygon([vec(0.3, 0.2), vec(0.3, 0.5), vec(0.4, 0.6), vec(0.6, 0.6), vec(0.6, 0.9), vec(0.7, 0.9), vec(0.7, 0.1), vec(0.4, 0.1)])
+    , polygon([vec(0.40, 0.24), vec(0.40, 0.46), vec(0.44, 0.50), vec(0.60, 0.50), vec(0.60, 0.20), vec(0.44, 0.20)])]).
 
