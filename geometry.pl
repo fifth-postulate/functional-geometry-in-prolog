@@ -66,8 +66,9 @@ escher(N, C) :-
           turn(turn(P)),
           C).
 
-corner(0, Stamp) :-
-    stamp(Stamp).
+corner(0, C) :-
+    utile(X),
+    quartet(blank, blank, blank, X, C).
 corner(N, C) :-
     succ(M, N),
     corner(M, U),
@@ -75,8 +76,9 @@ corner(N, C) :-
     utile(X),
     quartet(U, V, turn(V), X, C).
 
-side(0, Stamp) :-
-    stamp(Stamp).
+side(0, C) :-
+    ttile(W),
+    quartet(blank, blank, turn(W), W, C).
 side(N, C) :-
     succ(M, N),
     side(M, U),
@@ -234,6 +236,7 @@ transform(vec(X, Y), box(vec(Ax, Ay), vec(Bx, By), vec(Cx, Cy)), vec(U, V)) :-
     U is Ax + (Bx + Cx) * X,
     V is Ay + (By + Cy) * Y.
 
+shape(blank, []).
 shape(d,
     [ polygon([vec(0.3, 0.2), vec(0.3, 0.5), vec(0.4, 0.6), vec(0.6, 0.6), vec(0.6, 0.9), vec(0.7, 0.9), vec(0.7, 0.1), vec(0.4, 0.1)])
     , polygon([vec(0.40, 0.24), vec(0.40, 0.46), vec(0.44, 0.50), vec(0.60, 0.50), vec(0.60, 0.20), vec(0.44, 0.20)])]).
