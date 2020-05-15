@@ -241,3 +241,9 @@ shape(d,
     [ polygon([vec(0.3, 0.2), vec(0.3, 0.5), vec(0.4, 0.6), vec(0.6, 0.6), vec(0.6, 0.9), vec(0.7, 0.9), vec(0.7, 0.1), vec(0.4, 0.1)])
     , polygon([vec(0.40, 0.24), vec(0.40, 0.46), vec(0.44, 0.50), vec(0.60, 0.50), vec(0.60, 0.20), vec(0.44, 0.20)])]).
 
+
+/* ## Generate SVG
+*/
+
+svg -->
+    "<svg xmlns=""http://www.w3.org/2000/svg""></svg>".
