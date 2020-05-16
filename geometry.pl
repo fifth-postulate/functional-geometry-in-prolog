@@ -13,7 +13,6 @@ Eschers Square Limit is produced by stamping a base image. Here we define what i
 */
 stamp(d).
 
-defaultBox(box(vec(50.0, 50.0), vec(400.0, 0), vec(0.0, 400.0))).
 
 /* ## Algebraic Terms
 Below we will describe the terms that we will use to describe complex pictures. They are
@@ -135,8 +134,11 @@ A box is the sub-canvas to wich shapes are painted on. It is a term `box(A, B, C
 where the `A`, `B` and `C` are 2 dimensional vectors.
 
 Vectors are an other term `vec(X, Y)` and represent a point in the coordinate system.
+*/
 
-## Rendering
+defaultBox(box(vec(50.0, 50.0), vec(400.0, 0), vec(0.0, 400.0))).
+
+/* ## Rendering
 Give a description of a scene, a box to paint it in and a number of shapes to paint a
 rendering will form a description a picture.
 */
@@ -209,15 +211,12 @@ scale(F, vec(Ax, Ay), vec(Cx, Cy)) :-
     Cx is F * Ax,
     Cy is F * Ay.
 
-/*
-## Shape
+/* ## Shape
 A rendering is a list of drawing instructions
 
 * `blank` represents no picture
 * `d` represents the letter d. It is a-symmetric so operations on it are clearly visible.
 * `fish` Escher fish.
-
-
 */
 
 fit(DrawingPrimitives, Box, Result) :- fit(DrawingPrimitives, Box, [], Result).
