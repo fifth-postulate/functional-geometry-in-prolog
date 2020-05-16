@@ -248,8 +248,16 @@ defaultBound([500, 500]).
 
 paint(Bound, Content) -->
     svg(["viewbox"=viewbox(Bound)], [
-        group(["stroke"="black", "fill"="none"], Content)
+        group(["stroke"="black", "fill"="none", "transform"=transformation(Bound)], Content)
     ]).
+
+viewbox([Width, Height]) -->
+    { number_string(Width, W), number_string(Height, H)},
+    "0 0 ", W, " ", H.
+
+transformation([_, Height]) -->
+    {number_string(Height, H)},
+    "scale(1, -1) translate(0, -" , H, ")".
 
 svg(Attributes, Content) -->
     node("svg", ["xmlns"="http://www.w3.org/2000/svg"|Attributes], Content).
@@ -267,10 +275,6 @@ points([vec(Px, Py)|Points]) -->
     {number_string(Px, X), number_string(Py, Y)},
     " ", X, ",", Y,
     points(Points).
-
-viewbox([Width, Height]) -->
-    { number_string(Width, W), number_string(Height, H)},
-    "0 0 ", W, " ", H.
 
 node(Type, Attributes, Content) -->
     "<", Type, attributes(Attributes), ">",
