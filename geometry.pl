@@ -149,6 +149,7 @@ Vectors are an other term `vec(X, Y)` and represent a point in the coordinate sy
 */
 
 defaultBox(box(vec(50.0, 50.0), vec(400.0, 0), vec(0.0, 400.0))).
+unitBox(box(vec(0.0, 0.0), vec(1.0, 0.0), vec(0.0, 1.0))).
 
 /* ## Rendering
 Give a description of a scene, a box to paint it in and a number of shapes to paint a
@@ -173,9 +174,8 @@ render(moveY(F, T), box(vec(Ax, Ay), B, vec(Cx, Cy)), Result) :-
 
 render(turn(T), box(A, B, C), Result) :-
     add(A, B, A_),
-    rotate90(C, B_),
     negate(B, C_),
-    render(T, box(A_, B_, C_), Result).
+    render(T, box(A_, C, C_), Result).
 
 render(flip(T), box(A, B, C), Result) :-
     add(A, B, A_),
@@ -243,15 +243,19 @@ transform([P|Rest], Box, [Q|TransformedRest]) :-
     transform(P, Box, Q),
     transform(Rest, Box, TransformedRest).
 
-transform(vec(X, Y), box(vec(Ax, Ay), vec(Bx, By), vec(Cx, Cy)), vec(U, V)) :-
-    U is Ax + (Bx + Cx) * X,
-    V is Ay + (By + Cy) * Y.
+transform(U, box(A, B, C), W) :-
+    U = vec(X, Y),
+    scale(X, B, B_),
+    scale(Y, C, C_),
+    add(A, B_, V),
+    add(V, C_, W).
 
 shape(blank, []).
 shape(d,
     [ polygon([vec(0.3, 0.2), vec(0.3, 0.5), vec(0.4, 0.6), vec(0.6, 0.6), vec(0.6, 0.9), vec(0.7, 0.9), vec(0.7, 0.1), vec(0.4, 0.1)])
     , polygon([vec(0.40, 0.24), vec(0.40, 0.46), vec(0.44, 0.50), vec(0.60, 0.50), vec(0.60, 0.20), vec(0.44, 0.20)])]).
-
+shape(l,
+    [ polygon([vec(0.0, 1.0), vec(0.0, 0.0), vec(0.5, 0.0)])]).
 
 /* ## Generate SVG
 */
