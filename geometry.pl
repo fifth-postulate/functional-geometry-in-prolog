@@ -245,27 +245,20 @@ shape(d,
 /* ## Generate SVG
 */
 
-svg(Bound) -->
-    open_svg(Bound),
-    group(["stroke"="black", "fill"="none"], []),
-    close_svg.
+paint(_Bound) -->
+    svg(["viewbox"="0 0 500 500"], [
+        group(["stroke"="black", "fill"="none"], [])
+    ]).
 
-open_svg(Bound) -->
-    "<svg ", view_box(Bound), " xmlns=""http://www.w3.org/2000/svg"">".
-
-view_box([Width, Height]) -->
-    { number_string(Width, W), number_string(Height, H) },
-    "viewbox=""0 0 ", W, " ", H, """".
+svg(Attributes, Content) -->
+    node("svg", ["xmlns"="http://www.w3.org/2000/svg"|Attributes], Content).
 
 group(Attributes, Content) -->
     node("g", Attributes, Content).
 
-close_svg -->
-    "</svg>".
-
 node(Type, Attributes, Content) -->
     "<", Type, attributes(Attributes), ">",
-    Content,
+    content(Content),
     "</", Type, ">".
 
 attributes([]) -->
@@ -274,3 +267,10 @@ attributes([]) -->
 attributes([Key=Value|Attributes]) -->
     " ", Key, "=""", Value, """",
     attributes(Attributes).
+
+content([]) -->
+    "".
+
+content([Content|Rest]) -->
+    Content,
+    content(Rest).
