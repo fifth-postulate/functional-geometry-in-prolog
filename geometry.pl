@@ -13,7 +13,7 @@ Eschers Square Limit is produced by stamping a base image. Here we define what i
 */
 stamp(d).
 
-defaultBox(box(vec(75.0, 75.0), vec(640.0, 0), vec(0.0, 640.0))).
+defaultBox(box(vec(50.0, 50.0), vec(400.0, 0), vec(0.0, 400.0))).
 
 /* ## Algebraic Terms
 Below we will describe the terms that we will use to describe complex pictures. They are
@@ -245,9 +245,9 @@ shape(d,
 /* ## Generate SVG
 */
 
-paint(_Bound) -->
+paint(_Bound, Content) -->
     svg(["viewbox"="0 0 500 500"], [
-        group(["stroke"="black", "fill"="none"], [])
+        group(["stroke"="black", "fill"="none"], Content)
     ]).
 
 svg(Attributes, Content) -->
@@ -255,6 +255,17 @@ svg(Attributes, Content) -->
 
 group(Attributes, Content) -->
     node("g", Attributes, Content).
+
+svg_polygon(Points) -->
+    node("polygon", ["points"=points(Points)], []).
+
+points([]) -->
+    "".
+
+points([vec(Px, Py)|Points]) -->
+    {number_string(Px, X), number_string(Py, Y)},
+    " ", X, ",", Y,
+    points(Points).
 
 node(Type, Attributes, Content) -->
     "<", Type, attributes(Attributes), ">",
@@ -270,6 +281,10 @@ attributes([Key=Value|Attributes]) -->
 
 content([]) -->
     "".
+
+content([polygon(Points)|Rest]) -->
+    svg_polygon(Points),
+    content(Rest).
 
 content([Content|Rest]) -->
     Content,
