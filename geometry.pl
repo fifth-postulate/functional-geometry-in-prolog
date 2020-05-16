@@ -237,6 +237,9 @@ fit([], _, Result, Result).
 fit([polygon(Points)|Rest], Box, Accumulator, Result) :-
     transform(Points, Box, TransformedPoints),
     fit(Rest, Box, [polygon(TransformedPoints)|Accumulator], Result).
+fit([curve(Points)|Rest], Box, Accumulator, Result) :-
+    transform(Points, Box, TransformedPoints),
+    fit(Rest, Box, [curve(TransformedPoints)|Accumulator], Result).
 
 transform([], _, []).
 transform([P|Rest], Box, [Q|TransformedRest]) :-
@@ -470,6 +473,13 @@ group(Attributes, Content) -->
 svg_polygon(Points) -->
     tag("polygon", ["points"=points(Points)]).
 
+svg_curve(Points) -->
+    tag("path", ["d"=path(Points)]).
+
+path([vec(Sx, Sy)|Points]) -->
+    {number_string(Sx, X), number_string(Sy, Y)},
+    "M", X, ",", Y, "C", points(Points).
+
 points([]) -->
     "".
 
@@ -495,6 +505,10 @@ content([]) -->
 
 content([polygon(Points)|Rest]) -->
     svg_polygon(Points),
+    content(Rest).
+
+content([curve(Points)|Rest]) -->
+    svg_curve(Points),
     content(Rest).
 
 content([Content|Rest]) -->
