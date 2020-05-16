@@ -244,8 +244,10 @@ shape(d,
 /* ## Generate SVG
 */
 
-paint(_Bound, Content) -->
-    svg(["viewbox"="0 0 500 500"], [
+defaultBound([500, 500]).
+
+paint(Bound, Content) -->
+    svg(["viewbox"=viewbox(Bound)], [
         group(["stroke"="black", "fill"="none"], Content)
     ]).
 
@@ -265,6 +267,10 @@ points([vec(Px, Py)|Points]) -->
     {number_string(Px, X), number_string(Py, Y)},
     " ", X, ",", Y,
     points(Points).
+
+viewbox([Width, Height]) -->
+    { number_string(Width, W), number_string(Height, H)},
+    "0 0 ", W, " ", H.
 
 node(Type, Attributes, Content) -->
     "<", Type, attributes(Attributes), ">",
