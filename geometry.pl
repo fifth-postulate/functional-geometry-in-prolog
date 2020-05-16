@@ -247,7 +247,7 @@ shape(d,
 
 svg(Bound) -->
     open_svg(Bound),
-    group,
+    group(["stroke"="black", "fill"="none"], []),
     close_svg.
 
 open_svg(Bound) -->
@@ -257,15 +257,20 @@ view_box([Width, Height]) -->
     { number_string(Width, W), number_string(Height, H) },
     "viewbox=""0 0 ", W, " ", H, """".
 
-group -->
-    open_group,
-    close_group.
-
-open_group -->
-    "<g>".
-
-close_group -->
-    "</g>".
+group(Attributes, Content) -->
+    node("g", Attributes, Content).
 
 close_svg -->
     "</svg>".
+
+node(Type, Attributes, Content) -->
+    "<", Type, attributes(Attributes), ">",
+    Content,
+    "</", Type, ">".
+
+attributes([]) -->
+    "".
+
+attributes([Key=Value|Attributes]) -->
+    " ", Key, "=""", Value, """",
+    attributes(Attributes).
