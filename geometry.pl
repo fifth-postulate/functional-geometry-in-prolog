@@ -257,7 +257,7 @@ group(Attributes, Content) -->
     node("g", Attributes, Content).
 
 svg_polygon(Points) -->
-    node("polygon", ["points"=points(Points)], []).
+    tag("polygon", ["points"=points(Points)]).
 
 points([]) -->
     "".
@@ -289,3 +289,6 @@ content([polygon(Points)|Rest]) -->
 content([Content|Rest]) -->
     Content,
     content(Rest).
+
+tag(Type, Attributes) -->
+    "<", Type, attributes(Attributes), "/>".
