@@ -245,12 +245,16 @@ shape(d,
 /* ## Generate SVG
 */
 
-svg -->
-    open_svg,
+svg(Bound) -->
+    open_svg(Bound),
     close_svg.
 
-open_svg -->
-    "<svg xmlns=""http://www.w3.org/2000/svg"">".
+open_svg(Bound) -->
+    "<svg ", view_box(Bound), " xmlns=""http://www.w3.org/2000/svg"">".
+
+view_box([Width, Height]) -->
+    { number_string(Width, W), number_string(Height, H) },
+    "viewbox=""0 0 ", W, " ", H, """".
 
 close_svg -->
     "</svg>".
