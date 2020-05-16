@@ -8,6 +8,18 @@ This file will explore the concept in the context of Prolog.
 @author Daan van Berkel
 */
 
+processTo(Name, Complex) :-
+    open(Name, write, Output),
+    current_output(StandardOutput),
+    set_output(Output),
+    defaultBox(Box),
+    defaultBound(Bound),
+    render(Complex, Box, Rendering),
+    phrase(paint(Bound, Rendering), Svg),
+    format("~s", [Svg]),
+    close(Output),
+    set_output(StandardOutput).
+
 /* ## Stamp
 Eschers Square Limit is produced by stamping a base image. Here we define what it is.
 */
