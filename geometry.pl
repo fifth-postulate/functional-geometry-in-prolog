@@ -247,6 +247,7 @@ shape(d,
 
 svg(Bound) -->
     open_svg(Bound),
+    group,
     close_svg.
 
 open_svg(Bound) -->
@@ -255,6 +256,16 @@ open_svg(Bound) -->
 view_box([Width, Height]) -->
     { number_string(Width, W), number_string(Height, H) },
     "viewbox=""0 0 ", W, " ", H, """".
+
+group -->
+    open_group,
+    close_group.
+
+open_group -->
+    "<g>".
+
+close_group -->
+    "</g>".
 
 close_svg -->
     "</svg>".
