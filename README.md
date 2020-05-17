@@ -19,7 +19,7 @@ Prolog seems well-suited to express the ideas of functional geometry.
 Start SWI-Prolog and load the `geometry.pl` file with the following command.
 
 ```sh
-swipl geomertry.pl
+swipl geometry.pl
 ```
 
 At the query prompt enter the following query.
