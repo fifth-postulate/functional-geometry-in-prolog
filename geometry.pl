@@ -66,15 +66,9 @@ escher(N, C) :-
     corner(N, P),
     side(N, Q),
     utile(T),
-    nonet(P,
-          Q,
-          blank,
-          turn(Q),
-          T,
-          blank,
-          blank,
-          blank,
-          blank,
+    nonet(P, Q, blank,
+          blank, T, blank,
+          turn(P), blank, blank,
           C).
 
 corner(0, C) :-
@@ -165,13 +159,15 @@ render(scaleY(F, T), box(A, B, C), Result) :-
     scale(F, C, C_),
     render(T, box(A, B, C_), Result).
 
-render(moveX(F, T), box(vec(Ax, Ay), vec(Bx, By), C), Result) :-
-    Ax_ is Ax + F*Bx,
-    render(T, box(vec(Ax_, Ay), vec(Bx, By), C), Result).
+render(moveX(F, T), box(A, B, C), Result) :-
+    scale(F, B, B_),
+    add(A, B_, A_),
+    render(T, box(A_, B, C), Result).
 
-render(moveY(F, T), box(vec(Ax, Ay), B, vec(Cx, Cy)), Result) :-
-    Ay_ is Ay + F*Cy,
-    render(T, box(vec(Ax, Ay_), B, vec(Cx, Cy)), Result).
+render(moveY(F, T), box(A, B, C), Result) :-
+    scale(F, C, C_),
+    add(A, C_, A_),
+    render(T, box(A_, B, C), Result).
 
 render(turn(T), box(A, B, C), Result) :-
     add(A, B, A_),
