@@ -66,9 +66,9 @@ escher(N, C) :-
     corner(N, P),
     side(N, Q),
     utile(T),
-    nonet(P, Q, blank,
-          blank, T, blank,
-          turn(P), blank, blank,
+    nonet(P, Q, turn(turn(turn(P))),
+          turn(Q), T, turn(turn(turn(Q))),
+          turn(P), turn(turn(Q)), turn(turn(P)),
           C).
 
 corner(0, C) :-
