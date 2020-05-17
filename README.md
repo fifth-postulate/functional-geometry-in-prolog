@@ -30,6 +30,8 @@ escher(2, C), processTo('output.svg', C).
 
 Where `output.svg` is the file you want to write the result to.
 
+![Eschers level 2 Square Limit by Prolog](http://fifth-postulate.nl/functional-geometry-in-prolog/image/escher2.svg)
+
 [henderson]: https://eprints.soton.ac.uk/257577/1/funcgeo2.pdf
 [host]: https://twitter.com/einarwh
 [escher-in-elm]: https://github.com/einarwh/escher-workshop
