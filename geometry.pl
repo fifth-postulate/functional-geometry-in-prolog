@@ -79,8 +79,7 @@ corner(N, C) :-
     corner(M, U),
     side(M, V),
     utile(X),
-    Y = blank,
-    quartet(U, V, Y, X, C).
+    quartet(U, V, turn(V), X, C).
 
 side(0, C) :-
     ttile(W),
