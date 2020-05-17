@@ -23,7 +23,7 @@ processTo(Name, Complex) :-
 /* ## Stamp
 Eschers Square Limit is produced by stamping a base image. Here we define what it is.
 */
-stamp(d).
+stamp(fish).
 
 
 /* ## Algebraic Terms
@@ -68,13 +68,13 @@ escher(N, C) :-
     utile(T),
     nonet(P,
           Q,
-          turn(turn(turn(P))),
+          blank,
           turn(Q),
           T,
-          turn(turn(turn(Q))),
-          turn(P),
-          turn(turn(Q)),
-          turn(turn(P)),
+          blank,
+          blank,
+          blank,
+          blank,
           C).
 
 corner(0, C) :-
@@ -85,7 +85,8 @@ corner(N, C) :-
     corner(M, U),
     side(M, V),
     utile(X),
-    quartet(U, V, turn(V), X, C).
+    Y = blank,
+    quartet(U, V, Y, X, C).
 
 side(0, C) :-
     ttile(W),
@@ -96,9 +97,9 @@ side(N, C) :-
     ttile(W),
     quartet(U, U, turn(W), W, C).
 
-utile(C) :-
+utile(over(over(V, turn(turn(turn(V)))), over(turn(turn(V)), turn(V)))) :-
     stamp(U),
-    quartet(U, turn(turn(turn(U))), turn(turn(U)), turn(U), C).
+    V = flip(toss(U)).
 
 ttile(over(Stamp, over(U, turn(turn(turn(U)))))) :-
     stamp(Stamp),
@@ -133,7 +134,7 @@ aboveRatio(M, N, U, V, over(S, T)) :-
     F1 is float(M) / float(M+N),
     F2 is 1.0-F1,
     S = moveY(F2, scaleY(F1, U)),
-    T = scaleY(F1, V).
+    T = scaleY(F2, V).
 
 besideRatio(M, N, U, V, over(S, T)) :-
     F1 is float(M) / float(M+N),
@@ -156,13 +157,13 @@ Give a description of a scene, a box to paint it in and a number of shapes to pa
 rendering will form a description a picture.
 */
 
-render(scaleX(F, T), box(A, vec(Bx, By), C), Result) :-
-    FBx is F * Bx,
-    render(T, box(A, vec(FBx, By), C), Result).
+render(scaleX(F, T), box(A, B, C), Result) :-
+    scale(F, B, B_),
+    render(T, box(A, B_, C), Result).
 
-render(scaleY(F, T), box(A, B, vec(Cx, Cy)), Result) :-
-    FCy is F * Cy,
-    render(T, box(A, B, vec(Cx, FCy)), Result).
+render(scaleY(F, T), box(A, B, C), Result) :-
+    scale(F, C, C_),
+    render(T, box(A, B, C_), Result).
 
 render(moveX(F, T), box(vec(Ax, Ay), vec(Bx, By), C), Result) :-
     Ax_ is Ax + F*Bx,
