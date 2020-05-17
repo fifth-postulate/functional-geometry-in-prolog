@@ -8,6 +8,14 @@ This file will explore the concept in the context of Prolog.
 @author Daan van Berkel
 */
 
+/* `procesTo` allows one to write out the resulting SVG to a file.
+
+Use it like
+
+```
+escher(2, C), processTo('output.svg', C).
+```
+*/
 processTo(Name, Complex) :-
     open(Name, write, Output),
     current_output(StandardOutput),
@@ -28,38 +36,46 @@ stamp(fish).
 
 /* ## Algebraic Terms
 Below we will describe the terms that we will use to describe complex pictures. They are
-divided in the following classes
+divided in the following classes.
 
 ### Fundamental Terms
-These fundamental terms are the building blocks for more complex terms. 
+These fundamental terms are the building blocks for more complex terms. See `box` for more
+information on that subject.
 
-* `scaleX(F, T)`
-* `scaleY(F, T)`
-* `moveX(F, T)`
-* `moveY(F, T)`
-* `turn(T)`
-* `flip(T)`
-* `toss(T)`
-* `over(U, V)`
+* `scaleX(F, T)`, Scales the box horizontally by a factor of `F` and places `T` in that box.
+* `scaleY(F, T)`, Similar to `scaleX`, but scales vertically.
+* `moveX(F, T)`, Moves the box horizontally by an amount of `F` times the `b` vector of the box.
+* `moveY(F, T)`, Similar to `scaleY, but moves vertically.
+* `turn(T)`, rotates `T` counter-clockwise by 90 degrees in it's box.
+* `flip(T)`, flips `T` left to right in it's box.
+* `toss(T)`, tosses `T`, for a full description see the Functional Geometry paper.
+* `over(U, V)`, places `V` atop of `U` in the same box.
 
 ### Complex Terms
-The following complex terms all defined in terms of fundamental terms. For a discription see the 
-Functional Geometry paper.
+The following complex terms all defined in terms of fundamental terms, and themselves.
+For a discription see the Functional Geometry paper.
 
+For each of these the terms, the last argument is the result of term. E.g.
+
+```
+above(d, d, C).
+```
+
+will unify `C` with `over(moveY(0.5, scaleY(0.5, d)), scaleY(0.5, d))`.
+
+* `escher(N, C)`
+* `corner(N, C)`
+* `side(N, C)`
+* `utile(C)`
+* `ttile(C)`
+* `nonet(P, Q, R, S, T, U, V, W, X, C)`
+* `quartet(U, V, W, X, C)`
+* `column(P, Q, R, C)`
+* `row(P, Q, R, C)`
 * `aboveRatio(M, N, U, V, C)
 * `besideRatio(M, N, U, V, C)
 * `above(U, V, C)`
 * `beside(U, V, C)`
-* `column(P, Q, R, C)`
-* `row(P, Q, R, C)`
-* `quartet(U, V, W, X, C)`
-* `nonet(P, Q, R, S, T, U, V, W, X, C)`
-* `utile(T)`
-* `ttile(T)`
-* `corner(N, T)`
-* `side(N, T)`
-* `escher(N, T)`
-
 */
 
 escher(N, C) :-
@@ -136,18 +152,17 @@ besideRatio(M, N, U, V, over(S, T)) :-
     T = moveX(F1, scaleX(F2, V)).
 
 /* ## Box
-A box is the sub-canvas to wich shapes are painted on. It is a term `box(A, B, C)`
-where the `A`, `B` and `C` are 2 dimensional vectors.
-
-Vectors are an other term `vec(X, Y)` and represent a point in the coordinate system.
+A box is a coordinate system of the infinite canvas to wich shapes are painted on.
+It is a term `box(A, B, C)`, where the `A`, `B` and `C` are 2 dimensional vectors.
 */
 
 defaultBox(box(vec(50.0, 50.0), vec(400.0, 0), vec(0.0, 400.0))).
 unitBox(box(vec(0.0, 0.0), vec(1.0, 0.0), vec(0.0, 1.0))).
 
 /* ## Rendering
-Give a description of a scene, a box to paint it in and a number of shapes to paint a
-rendering will form a description a picture.
+A rendering is a list of drawing instructions.
+
+Given a description of a scene, a box to paint it in, `render` will a rendering.
 */
 
 render(scaleX(F, T), box(A, B, C), Result) :-
@@ -196,6 +211,8 @@ render(Shape, Box, Result) :-
     fit(DrawingPrimitives, Box, Result).
 
 /* ## Vector Algebra
+Vectors are an other term `vec(X, Y)` and represent a point in the coordinate system.
+
 These clauses help in doing vector algebra.
 */
 
@@ -219,12 +236,8 @@ scale(F, vec(Ax, Ay), vec(Cx, Cy)) :-
     Cx is F * Ax,
     Cy is F * Ay.
 
-/* ## Shape
-A rendering is a list of drawing instructions
-
-* `blank` represents no picture
-* `d` represents the letter d. It is a-symmetric so operations on it are clearly visible.
-* `fish` Escher fish.
+/* ## Fit
+`fit` transform the drawing primitives to fit in the box.
 */
 
 fit(DrawingPrimitives, Box, Result) :- fit(DrawingPrimitives, Box, [], Result).
@@ -248,6 +261,14 @@ transform(U, box(A, B, C), W) :-
     scale(Y, C, C_),
     add(A, B_, V),
     add(V, C_, W).
+
+/* ## Shape
+
+* `blank` represents no picture
+* `fish` Escher fish.
+* `d` represents the letter d. It is a-symmetric so operations on it are clearly visible.
+* 'l' a stick-L used to see box transformation.
+*/
 
 shape(blank, []).
 shape(d,
@@ -443,6 +464,10 @@ shape(fish,
   ]).
 
 /* ## Generate SVG
+Below is a Domain Specific Language (DSL) using Definite Clause Grammers (DCG)
+for a small subset of Scalable Vector Graphics (SVG).
+
+It can be used to create a codes string that describes the drawing primitives.
 */
 
 defaultBound([500, 500]).
